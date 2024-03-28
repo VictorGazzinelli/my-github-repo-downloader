@@ -10,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "adm-zip": "^0.5.12",
     "archiver": "^7.0.1",
-    "axios": "^1.6.8",
-    "unzipper": "^0.10.14"
+    "axios": "^1.6.8"
   }
 }

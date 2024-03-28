@@ -1,7 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
-const unzipper = require('unzipper');
+const AdmZip = require('adm-zip');
 const archiver = require('archiver');
 
 async function getDefaultBranch(name, token) {
@@ -35,8 +35,8 @@ async function cloneGithubRepoAsZip(name, token) {
 		});
 		const tempExtractPath = `./${name.replace('/','_')}-temp`;
 		await fs.promises.mkdir(tempExtractPath, { recursive: true });
-		await fs.createReadStream(tempDownloadPath)
-		  .pipe(unzipper.Extract({ path: tempExtractPath })).promise();
+		const zip = new AdmZip(tempDownloadPath);
+    	zip.extractAllTo(tempExtractPath, true);
 		const rootFolders = await fs.promises.readdir(tempExtractPath);
 		const output = fs.createWriteStream(finalZipPath);
 		const archive = archiver('zip', { zlib: { level: 9 }});
@@ -68,7 +68,7 @@ function splitArrayIntoChunks(array, chunkSize) {
 
 async function main() {
     // special cases: "vitejs/vite" "neherlab/covid19_scenarios"
-	const repos = ["neherlab/covid19_scenarios"]
+	const repos = ["4catalyzer/astroturf"]
     const token = process.env.GITHUB_TOKEN;
     const reposInPages = splitArrayIntoChunks(repos, 1);
     for(const page of reposInPages)
